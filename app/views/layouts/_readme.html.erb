@@ -1,0 +1,22 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+
+    <h4 class="cs-no-margin">
+      Readme
+    </h4>
+
+  </div>
+
+  <div class="panel-body">
+    <%
+      raw_html = render_markup \
+        @package.readme, \
+        @package.readme_type, \
+        @package.name
+    %>
+
+    <%= raw_html.html_safe %>
+  </div>
+
+</div>

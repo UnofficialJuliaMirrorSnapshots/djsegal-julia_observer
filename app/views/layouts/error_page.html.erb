@@ -1,0 +1,98 @@
+<%
+  mail_param_list = [
+    controller_name.singularize.titleize,
+    params[:id],
+    request.referrer,
+    params.to_unsafe_h,
+    cookies.to_h,
+    @exception
+  ]
+
+  if Rails.env.production?
+    ErrorLogMailer.log_email(*mail_param_list).deliver_later
+  else
+    ErrorLogMailer.log_email(*mail_param_list).deliver_now
+  end
+%>
+
+<div class="cs-full-width cs-main-area">
+
+  <div class="panel panel-primary cs-error-panel">
+
+    <div class="panel-heading">
+
+      <h2 class="cs-no-margin">
+        Whoops...
+      </h2>
+
+    </div>
+
+    <div class="panel-body cs-center">
+
+      <div class="cs-flex-buffer">
+      </div>
+
+      <p>
+
+        <% if params[:id].present? %>
+
+          The <%= controller_name.singularize %> you're looking for isn't working.
+
+        <% elsif controller_name.include? 'error' %>
+
+          This route doesn't seem to be working
+
+        <% else %>
+
+          <%= controller_name.titleize %> don't seem to be working.
+
+        <% end %>
+
+      </p>
+
+      <p>
+
+        Please view the
+        <%= link_to 'logs', logs_path %>
+        to help debug the problem.
+
+      </p>
+
+      <p>
+
+        Thank You!
+
+      </p>
+
+      <p style="padding-top: 8px">
+
+        <%= link_to "🍪&nbsp;&nbsp;Clear&nbsp;Cookies&nbsp;&nbsp;🍪".html_safe, settings_path(clear_cookies: true), class: "btn btn-default btn-raised cs-side-bar-footer-link cs-no-margin", style: "padding-left: 15px; padding-right: 15px;" %>
+
+      </p>
+
+      <div class="cs-flex-buffer">
+      </div>
+
+    </div>
+
+    <div class="panel-footer cs-center cs-no-padding">
+
+      <a href="https://github.com/djsegal/julia_observer/issues" target="_blank" class="btn btn-default cs-side-bar-footer-link cs-full-width cs-no-margin">
+
+        <%= fa_icon "github lg" %>
+
+        &nbsp; file an issue on github
+
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  $("body")[0].addEventListener("click", function(e) {
+    e.stopPropagation();
+  }, false);
+</script>

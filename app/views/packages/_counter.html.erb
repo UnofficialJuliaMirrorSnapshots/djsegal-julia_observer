@@ -1,0 +1,74 @@
+<div class="cs-counter-panels">
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+
+      <h4 class="cs-no-margin">
+        Counts
+      </h4>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="list-group cs-no-margin cs-condensed-list">
+
+        <% Package.get_count_types.sort.reverse.each_with_index do |count_type, index| %>
+
+          <% unless index.zero? %>
+
+            <div class="list-group-separator cs-full-width visible-xs"></div>
+
+          <% end %>
+
+          <div class="list-group-item">
+
+            <div class="row-picture">
+
+              <i class="circle" alt="icon">
+                <%= @package.counter[count_type] %>
+              </i>
+
+            </div>
+
+            <div class="row-content">
+
+              <h3 class="list-group-item-heading">
+
+                <% count_sub_route = Counter::COUNT_SUB_ROUTES[count_type.pluralize.to_sym] %>
+
+                <%
+                  cur_label = count_type.pluralize
+                  cur_label.gsub! "_", " "
+                  cur_label.gsub! "open", ""
+                  cur_label.strip!
+                %>
+
+                <% if count_sub_route.present? %>
+
+                  <a href="<%= @package.url + '/' + count_sub_route %>" target="_blank">
+                    <%= cur_label %>
+                  </a>
+
+                <% else %>
+
+                  <%= cur_label %>
+
+                <% end %>
+
+              </h3>
+
+            </div>
+
+          </div>
+
+        <% end %>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,671 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require jquery-ui
+ *= require font-awesome
+ *= require_tree .
+ *= require_self
+ */
+
+@import "bootstrap";
+@import "bootstrap-material-design";
+
+@media (min-width: 768px) {
+  html, body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+}
+
+h1, h2, h3,
+h4, h5, h6 {
+  @extend %headings !optional;
+}
+
+.cs-main-area,
+.cs-side-bar {
+  @extend %cs-big-box !optional;
+}
+
+body {
+  padding-top: 50px;
+}
+
+@media (min-width: 1200px) {
+  body {
+    padding-top: 60px;
+  }
+}
+
+.cs-center {
+  text-align: center;
+}
+
+.cs-left-align {
+  text-align: left;
+}
+
+.cs-no-margin {
+  margin: 0 !important;
+}
+
+.cs-no-padding {
+  padding: 0 !important;
+}
+
+.cs-pull-right {
+  float: right;
+}
+
+.cs-full-width {
+  width: 100% !important;
+}
+
+.cs-full-width:before {
+  width: 100% !important;
+}
+
+.cs-side-bar:not(.cs-default-sidebar) .panel-heading {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.cs-default-sidebar .panel-heading {
+  height: 50px;
+}
+
+@media (min-width: 1200px) {
+  .cs-default-sidebar .panel-heading {
+    height: 60px;
+  }
+}
+
+.cs-default-sidebar .panel-body {
+  overflow-y: scroll;
+}
+
+.cs-default-sidebar .panel-body {
+  height: calc( 100vh - 100px );
+}
+
+@media (min-width: 1200px) {
+  .cs-default-sidebar .panel-body {
+    height: calc( 100vh - 120px );
+  }
+}
+
+.cs-default-sidebar .panel-heading {
+
+  a {
+    height: 100%;
+  }
+
+  h4 {
+    top: 50%;
+    position: relative;
+    line-height: 0;
+  }
+
+}
+
+.cs-side-bar .panel:last-child {
+  margin-bottom: 0;
+}
+
+.cs-side-bar .panel .list-group, .cs-love-panel .list-group {
+  margin-bottom: 0;
+}
+
+.cs-default-sidebar .panel-heading {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.cs-side-bar .panel-heading a {
+  color: inherit;
+}
+
+.cs-category-row {
+  min-height: 0 !important;
+}
+
+.cs-category-row a, .cs-category-row > div {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-weight: initial;
+  text-transform: initial;
+}
+
+.cs-main-area {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cs-main-area .panel-heading {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.cs-main-area .panel-heading %headings {
+  padding-top: 14.25px;
+  padding-bottom: 14.25px;
+  display: inline-block;
+}
+
+@media (min-width: 768px) {
+  .cs-main-area .panel:first-child {
+    margin-top: 20px;
+  }
+}
+
+.cs-main-area .row-picture {
+  vertical-align: top;
+}
+
+.cs-main-area .row-picture i {
+  font-style: initial;
+}
+
+.cs-side-bar-footer-link {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: initial;
+  text-transform: initial;
+}
+
+@media (min-width: 768px) {
+  .cs-condensed-list .list-group-item {
+    display: inline-block;
+    width: 49%;
+  }
+}
+
+@media (min-width: 768px) {
+  .cs-dater-panels .col-sm-4:first-child {
+    padding-left: 0;
+  }
+
+  .cs-dater-panels .col-sm-4:not(:first-child):not(:last-child) {
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+  }
+
+  .cs-dater-panels .col-sm-4:last-child {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .cs-dater-panels .col-sm-4 {
+    padding: 10px 0;
+  }
+
+  .cs-dater-panels .col-sm-4:first-child {
+    padding-top: 0;
+  }
+
+  .cs-dater-panels .col-sm-4:last-child {
+    padding-bottom: 0;
+    margin-bottom: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cs-package-show {
+    padding-bottom: 20px;
+  }
+
+  .cs-require-panels .col-sm-6:first-child {
+    padding-left: 0;
+  }
+
+  .cs-require-panels .col-sm-6:last-child {
+    padding-right: 0;
+  }
+
+  .cs-require-panels {
+    padding-top: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cs-require-panels .col-sm-6 {
+    padding: 10px 0;
+  }
+
+  .cs-require-panels a {
+    text-align: right;
+  }
+
+  .cs-require-panels .col-sm-6:first-child {
+    padding-top: 0;
+  }
+
+  .cs-require-panels .col-sm-6:last-child {
+    padding-bottom: 0;
+    margin-bottom: 20px;
+  }
+}
+
+.cs-require-panels .list-group {
+  @extend .cs-no-margin;
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+
+.cs-package-stars {
+  opacity: 0.4;
+}
+
+.ui-autocomplete {
+  z-index: 2000;
+  @extend .well;
+  @extend .cs-no-padding;
+}
+
+.cs-dummy-link {
+  font-size: 0;
+}
+
+.cs-background-img {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.cs-profile-picture__org {
+  min-height: 20vh;
+  @extend .cs-background-img;
+}
+
+.cs-profile-picture__user {
+  min-height: 100px;
+  @extend .cs-background-img;
+}
+
+.cs-contributors-list .cs-grey-image a {
+  @extend .cs-background-img;
+  padding: 30px 0;
+
+  filter: gray; /* IE6-9 */
+  filter: grayscale(0.95); /* Microsoft Edge and Firefox 35+ */
+  -webkit-filter: grayscale(0.95); /* Google Chrome, Safari 6+ & Opera 15+ */
+  opacity: 0.75;
+}
+
+.cs-contributors-list .cs-grey-image a:hover {
+  filter: none;
+  filter: grayscale(0.25); /* Microsoft Edge and Firefox 35+ */
+  -webkit-filter: grayscale(0.25); /* Google Chrome, Safari 6+ & Opera 15+ */
+  opacity: 0.9
+}
+
+.cs-contributors-list .cs-grey-image:not(:first-child) {
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  %cs-big-box {
+    position: absolute;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    top: 50px;
+    height: calc(100% - 50px);
+  }
+
+  @media (min-width: 1200px) {
+    %cs-big-box {
+      top: 60px;
+      height: calc(100% - 60px);
+    }
+  }
+
+  .cs-side-bar {
+    right: -0.5px;
+  }
+}
+
+.cs-star-rating {
+  width: 100%;
+  padding-left: 10px;
+
+  i.material-icons {
+    width: 100%;
+    padding-left: 50%;
+    margin-left: -12px;
+  }
+
+  div.cs-star-rating__number {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+img {
+  max-width: 100%;
+  max-height: 55vh;
+}
+
+a.panel-heading:hover,
+a.panel-heading:active,
+a.panel-heading:focus {
+  background-color: #3f51b5 !important;
+}
+
+.cs-profile-picture__user {
+  -webkit-transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: filter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cs-profile-picture__user:hover {
+  filter: brightness(105%);
+}
+
+.cs-log-line {
+  word-wrap: break-word;
+}
+
+.cs-error-panel {
+  height: calc( 100vh - 90px );
+}
+
+@media (min-width: 1200px) {
+  .cs-error-panel {
+    height: calc( 100vh - 100px );
+  }
+}
+
+.cs-error-panel, .cs-error-panel .panel-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-error-panel .panel-body, .cs-error-panel .cs-flex-buffer {
+  flex: 1 1 auto;
+}
+
+.cs-truncated-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.cs-logo-icon {
+  margin-right: 7.5px;
+  line-height: 0.7em;
+}
+
+@media (min-width: 768px) {
+  .cs-logo-icon {
+    display: none;
+  }
+}
+
+.cs-user-pagination {
+
+  margin-top: 15px;
+  background: #f1f1f1;
+  border: 1px solid #e5e5e5;
+  text-align: center;
+  padding: 1em;
+  cursor: default;
+
+  a, span {
+    padding: 0.2em 0.3em;
+  }
+
+  .disabled {
+    color: #aaaaaa;
+  }
+
+  .current {
+    font-style: normal;
+    font-weight: bold;
+    background-color: #bebebe;
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+    line-height: 1.5;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    text-shadow: rgba(255, 255, 255, 0.8) 1px 1px 1px; }
+
+  a {
+    text-decoration: none;
+    color: black;
+    &:hover, &:focus {
+      text-decoration: underline;
+    }
+  }
+
+}
+
+.cs-sidebar-toggle {
+  padding: 20px 0;
+  font-weight: initial;
+  text-transform: initial;
+}
+
+.cs-sidebar-toggle.active:hover {
+  color: inherit;
+}
+
+.cs-inactive-toggle {
+  @extend .active;
+}
+
+.cs-link-opacity {
+  opacity: 0.3;
+  -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover, &:focus {
+    opacity: 0.8;
+  }
+}
+
+.cs-category-row .cs-link-icon {
+  padding-top: 25px;
+  padding-bottom: 25px;
+  @extend .cs-link-opacity;
+}
+
+.cs-show-more-toggle.js-show-more-toggle__toggled {
+  .cs-blurb-text {
+    white-space: initial;
+  }
+}
+
+.cs-show-more-toggle:not(.js-show-more-toggle__toggled) {
+  .cs-blurb-text * {
+    @extend .cs-truncated-text;
+  }
+
+  .cs-blurb-text p:first-of-type {
+    display: inherit;
+    margin-bottom: 0;
+  }
+
+  .cs-blurb-text *:not(.md) {
+    display: none;
+  }
+
+  .cs-blurb-text {
+    visibility: collapse;
+  }
+
+  .cs-blurb-text * {
+    visibility: visible;
+  }
+}
+
+.cs-link {
+  text-decoration: underline;
+}
+
+.cs-link-hover:hover .cs-link {
+  color: #009688;
+}
+
+.cs-news-selector {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.cs-news-selector:not(.btn-primary) {
+  opacity: 0.3;
+}
+
+@media (min-width: 401px) {
+  .cs-packages-short-word {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .cs-packages-word {
+    display: none;
+  }
+}
+
+@media (max-width: 336px) {
+  .cs-packages-word, .cs-packages-short-word {
+    display: none;
+  }
+}
+
+@media (max-width: 449px) {
+  .cs-trending-word {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .cs-trending-hidden-small {
+    display: none;
+  }
+}
+
+.cs-share-dropdown {
+  a {
+    @extend .cs-link-opacity;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar .navbar-brand {
+    padding: 10px;
+  }
+}
+
+.cs-is-indirect-dependency .list-group-item {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.cs-include-checkbox .checkbox-material:first-of-type {
+  margin-left: 0.5px;
+}
+
+.cs-include-checkbox .checkbox-material:not(:first-of-type) {
+  display: none;
+}
+
+.cs-secondary-checkbox {
+  padding: 10px 10px 10px 10px;
+  margin: 0 -10px 0 0;
+
+  span.check {
+    color: #9E9E9E !important;
+    border-color: #9E9E9E !important;
+    &::before {
+      color: #9E9E9E !important;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-form {
+    margin-top: 0 !important;
+  }
+}
+
+.cs-hide-indirect-dependencies .cs-is-indirect-dependency {
+  display: none;
+}
+
+.cs-no-round {
+  border-radius: 0;
+}
+
+.cs-main-area .cs-main-panel {
+  margin-top: 20px;
+}
+
+.cs-toggle-panel .panel-heading a {
+  color: inherit;
+}
+
+.cs-homepage-link {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#js-copy-text {
+  cursor: default;
+  width: 62%;
+  text-align: center;
+  margin-left: 19% !important;
+  overflow-x: scroll;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#js-copy-text::selection { background: transparent; }
+#js-copy-text::-moz-selection { background: transparent; }
+
+.cs-ripple {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  left: 0;
+  top: 0;
+  overflow:hidden;
+}
+
+.ripple-effect{
+  position: absolute;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background: white;
+
+  animation: ripple-animation 2s;
+}
+
+@keyframes ripple-animation {
+    from {
+      transform: scale(1);
+      opacity: 0.4;
+    }
+    to {
+      transform: scale(100);
+      opacity: 0;
+    }
+}

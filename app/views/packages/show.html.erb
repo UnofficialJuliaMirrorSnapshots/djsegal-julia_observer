@@ -1,0 +1,269 @@
+<%
+  page_title @package.name
+  page_description "#{@package.name}.jl – #{@package.description}"
+%>
+
+<div class="col-sm-8 cs-main-area cs-package-show">
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+
+      <div class="row cs-no-margin">
+
+        <div class="col-sm-10 cs-no-padding">
+
+          <h1 class="cs-truncated-text">
+
+            <a href="<%= @package.url %>">
+              <%= @package.name %>
+            </a>
+
+          </h1>
+
+          <h4>
+            <%= @package.description %>
+          </h4>
+
+        </div>
+
+        <div class="col-sm-2 hidden-xs cs-no-padding">
+
+          <div class="btn-group cs-pull-right cs-share-dropdown">
+            <a href="bootstrap-elements.html" data-target="#" class="btn btn-default btn dropdown-toggle" data-toggle="dropdown"><%= fa_icon "share-alt lg" %></span></a>
+            <ul class="dropdown-menu" style="right: 0; left: initial; min-width: initial;">
+              <%
+                package_share_url = request.original_url
+                package_share_url.sub! 'cdn.', ''
+                package_share_url.sub! '/packages/', '/p/'
+
+                package_share_title = \
+                  url_encode "#{@package.name} – #{@package.description}"
+              %>
+
+              <li><a target='_blank' href='https://twitter.com/intent/tweet?url=<%= package_share_url %>&text=<%= package_share_title %>'><%= fa_icon "twitter lg" %></a></li>
+              <li><a target='_blank' href='https://reddit.com/r/Julia/submit?url=<%= package_share_url %>&title=<%= package_share_title %>'><%= fa_icon "reddit lg" %></a></li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <%= render "counter" %>
+
+  <%= render "layouts/readme" %>
+
+  <%= render "dater" %>
+
+  <% unless @package.name == "Julia" %>
+    <%= render "require" %>
+  <% end %>
+
+  <div class="visible-xs">
+    <%= render 'layouts/made_with_love_panel' %>
+  </div>
+
+</div>
+
+<div class="cs-side-bar col-sm-4 hidden-xs cs-no-padding">
+
+  <div class="panel panel-primary">
+
+    <div class="panel-heading cs-center js-copy-button" data-clipboard-action="copy" data-clipboard-target="#js-copy-text">
+      <%
+        package_command = \
+          @package.is_registered ? 'add' : 'clone'
+
+        package_reference = \
+          @package.is_registered ? @package.name : @package.url
+      %>
+
+      <span style="float: right;">
+          <%= fa_icon "clone lg" %>
+      </span>
+
+      <h4 class="cs-no-margin" id="js-copy-text">Pkg.<%= package_command %>("<%= package_reference %>")</h4>
+
+      <div class="cs-ripple js-ripple">
+      </div>
+    </div>
+
+    <div class="panel-body cs-no-padding">
+
+      <div class="list-group">
+
+        <div class="list-group-item cs-no-padding">
+
+          <div class="row-content cs-full-width cs-category-row">
+
+            <%
+              package_website = format_website_link \
+                @package.homepage
+
+              package_website ||= @package.url
+            %>
+
+            <a href="<%= package_website %>" class="btn btn-default cs-full-width cs-left-align cs-no-margin">
+
+              <h4>
+                homepage
+              </h4>
+
+              <br>
+
+              <%
+                homepage_link_text = @package.homepage.present? ? \
+                  @package.homepage : "no homepage"
+              %>
+
+              <span class="cs-pull-right cs-homepage-link">
+                <%= homepage_link_text %>
+              </span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+        <div class="list-group-item cs-no-padding">
+
+          <div class="row-content cs-full-width cs-category-row">
+
+            <%= link_to @package.owner, class: "btn btn-default cs-full-width cs-left-align cs-no-margin" do %>
+
+              <h4>
+                owner
+              </h4>
+
+              <br>
+
+              <span class="cs-pull-right">
+                <%= @package.owner.name %>
+              </span>
+
+            <% end %>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <%= render "activity" %>
+
+  <div class="panel panel-primary">
+
+    <div class="panel-heading cs-center">
+      <h4 class="cs-no-margin">Contributors</h4>
+    </div>
+
+    <div class="panel-body cs-no-padding">
+
+      <div class="list-group">
+
+        <% @contributors.each_slice(4).with_index do |batch, index| %>
+
+          <% unless index.zero? %>
+            <div class="list-group-separator cs-full-width cs-no-margin"></div>
+          <% end %>
+
+          <div class="list-group-item cs-no-padding">
+
+            <div class="row cs-contributors-list cs-no-margin">
+
+              <% batch.each do | contributor | %>
+
+                <div class="col-xs-3 cs-grey-image cs-no-padding">
+
+                  <%= link_to '', user_path(contributor), class: "btn btn-default cs-full-width cs-left-align cs-no-margin", style: "background-image: url('#{ contributor.avatar}');" %>
+
+                </div>
+
+              <% end %>
+
+            </div>
+
+          </div>
+
+        <% end %>
+
+      </div>
+
+    </div>
+
+    <div class="panel-footer cs-center cs-no-padding">
+      <%= link_to users_path(package_id: @package), class: "btn btn-default cs-side-bar-footer-link cs-full-width cs-no-margin" do %>
+        View all Contributors
+      <% end %>
+    </div>
+
+  </div>
+
+  <% unless @package.versions.count.zero? %>
+    <%= render 'versions' %>
+  <% end %>
+
+  <%= render 'layouts/made_with_love_panel' %>
+
+</div>
+
+<script>
+  $(document).ready(function(){
+    var clipboard = new Clipboard('.js-copy-button');
+
+    var curRipple = $(".js-ripple"),
+        newHeight = curRipple.parent().outerHeight();
+
+    curRipple.height(newHeight);
+
+    // copy pasta [beg]
+
+    (function (window, $) {
+
+      $(function() {
+
+        $('.js-ripple').on('click', function (event) {
+          event.preventDefault();
+
+          var curDiv = $('<div/>'),
+              btnOffset = $(this).offset(),
+              xPos = event.pageX - btnOffset.left,
+              yPos = event.pageY - btnOffset.top;
+
+
+          curDiv.addClass('ripple-effect');
+          var ripple = $(".ripple-effect");
+
+          ripple.css("height", $(this).height());
+          ripple.css("width", $(this).height());
+          curDiv
+            .css({
+              top: yPos - (ripple.height()/2),
+              left: xPos - (ripple.width()/2),
+              background: $(this).data("ripple-color")
+            })
+            .appendTo($(this));
+
+          window.setTimeout(function(){
+            curDiv.remove();
+          }, 2000);
+        });
+
+      });
+
+    })(window, jQuery);
+
+    // copy pasta [end]
+
+  });
+</script>

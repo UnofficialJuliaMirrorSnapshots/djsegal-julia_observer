@@ -1,0 +1,59 @@
+<%
+  has_per_page = defined? per_page
+
+  per_page = WillPaginate.per_page \
+    unless has_per_page
+
+  offset = ( params[:page] || '1' ).to_i - 1
+  offset *= per_page
+%>
+
+<% packages.each_with_index do |package, index| %>
+
+  <% offset_index = offset + index %>
+
+  <% unless offset_index.zero? %>
+
+    <div class="list-group-separator"></div>
+
+  <% end %>
+
+  <div class='list-group-item col-sm-10'>
+
+    <div class='row-picture'>
+
+      <i class='circle' alt='icon'>
+
+        <%= offset_index + 1 %>
+      </i>
+
+    </div>
+
+    <div class='row-content'>
+
+      <h4 class='list-group-item-heading'>
+        <%= link_to package.name, package_path(package.name) %>
+      </h4>
+
+      <p class='list-group-item-text cs-truncated-text'>
+        <% if package.description.present? %>
+
+          <%= package.description.gsub('`', '"') %>
+
+        <% end %>
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class='col-sm-2 hidden-xs cs-pull-right cs-package-stars'>
+
+    <h4 class='cs-star-rating'>
+      <i class='material-icons'>star_rate</i>
+      <div class="cs-star-rating__number"><%= package.counter.try(:stargazer) || "-" %></div>
+    </h4>
+
+  </div>
+
+<% end %>

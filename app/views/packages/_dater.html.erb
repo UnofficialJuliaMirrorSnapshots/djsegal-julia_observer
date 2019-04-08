@@ -1,0 +1,71 @@
+<div class="row cs-dater-panels cs-no-margin">
+
+  <div class="col-sm-4">
+    <div class="panel panel-default cs-no-margin">
+
+      <div class="panel-heading">
+
+        <h4 class="cs-no-margin">
+          First Commit
+        </h4>
+
+      </div>
+
+      <div class="panel-body">
+
+        <p class="cs-no-margin cs-pull-right">
+          <%=
+            @package.dater.created.strftime("%m/%d/%Y")
+          %>
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="panel panel-default cs-no-margin">
+
+      <div class="panel-heading">
+
+        <h4 class="cs-no-margin">
+          Last Touched
+        </h4>
+
+      </div>
+
+      <div class="panel-body">
+
+        <p class="cs-no-margin cs-pull-right">
+          <%= time_ago_in_words @package.dater.touched %> ago
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-sm-4">
+    <div class="panel panel-default cs-no-margin">
+
+      <div class="panel-heading">
+
+        <h4 class="cs-no-margin">
+          Commits
+        </h4>
+
+      </div>
+
+      <div class="panel-body">
+
+        <p class="cs-no-margin cs-pull-right">
+          <%= @package.contributions.map(&:score).sum %> commits
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

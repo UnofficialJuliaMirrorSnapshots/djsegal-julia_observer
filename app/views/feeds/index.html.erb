@@ -1,0 +1,67 @@
+<% page_title 'RSS Feeds' %>
+
+<div class="col-sm-8 cs-main-area">
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+
+      <h3 class="cs-no-margin cs-full-width cs-center">
+        RSS Feeds
+      </h3>
+
+    </div>
+
+    <div class="panel-body">
+
+      <table class="table table-striped table-hover cs-no-margin">
+
+        <thead>
+
+          <tr>
+
+            <th>#</th>
+            <th>Feed</th>
+            <th class="hidden-xs">URL</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <%
+            @feeds_array = @feeds.to_a
+            @stubbed_feed = { name: 'packages' }
+            @feeds_array.unshift @stubbed_feed
+          %>
+
+          <% @feeds_array.each_with_index do |feed, index| %>
+
+            <% feed_name = feed[:name] %>
+
+            <tr>
+
+              <td><%= index + 1 %></td>
+              <td><%= link_to feed_name, "#{ feed_path(feed_name) }.rss", target: "_blank" %></td>
+              <td class="hidden-xs"><%= link_to "#{ feed_url(feed_name) }.rss", "#{ feed_path(feed_name) }.rss", target: "_blank" %></td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="visible-xs">
+    <%= render 'layouts/made_with_love_panel' %>
+  </div>
+
+</div>
+
+<%= render 'layouts/default_side_bar' %>

@@ -1,0 +1,106 @@
+<% sort_title ||= @sort.split('_').map(&:titleize).join('-') %>
+
+<div class="col-sm-8 cs-main-area">
+
+  <div class="visible-xs">
+    <%= render partial: 'layouts/mobile_toggle_panel', locals: { is_trending_packages: false } %>
+  </div>
+
+  <div class="panel panel-default cs-main-panel">
+
+    <div class="panel-heading">
+
+      <h4 class="cs-no-margin">
+        <% if sort_title == "Searched" %>
+          <span class='cs-packages-short-word hidden-sm hidden-md hidden-lg hidden-xl'> 🔎 </span>
+          <span class='cs-packages-word hidden-sm hidden-md hidden-lg hidden-xl'> 🔎&nbsp; Pkgs </span>
+          <span class='hidden-xs visible-sm'> 🔎&nbsp; Packages </span>
+          <span class='hidden-xs hidden-sm visible-md-*'> Searched Packages </span>
+        <% else %>
+          <%= sort_title %>
+          <span class='cs-packages-short-word'> Pkgs </span>
+          <span class='cs-packages-word'> Packages </span>
+        <% end %>
+      </h4>
+
+      <div class="btn-group cs-pull-right">
+
+        <% cookies.permanent[:sort] ||= 'top' %>
+
+        <%
+
+          cur_query = {}
+
+          cur_sort = params[:sort]
+
+          if sort_title == "Searched"
+            cur_query["term"] = params[:term]
+            cur_path = method(:searches_path)
+          else
+            cur_sort ||= cookies[:sort]
+            cur_path = method(:settings_path)
+          end
+
+        %>
+
+        <%= link_to 'Top', cur_path.call(cur_query.merge(sort: 'top')),
+          class: "js-tooltip btn btn-sm #{ ( cur_sort == 'top' ) ? ' btn-raised btn-primary hidden-xs' : '' }",
+          title: "", data: { toggle: "tooltip", placement: "bottom", original_title: "Sort by star count" } %>
+        <%= link_to 'New', cur_path.call(cur_query.merge(sort: 'new')),
+          class: "js-tooltip btn btn-sm #{ ( cur_sort == 'new' ) ? ' btn-raised btn-primary hidden-xs' : '' }",
+          title: "", data: { toggle: "tooltip", placement: "bottom", original_title: "Sort by most recent" } %>
+
+        <% if %w[ a_z z_a ].include? cur_sort %>
+          <%= link_to cur_sort, cur_path.call(cur_query.merge(sort: cur_sort.reverse)),
+            class: "js-tooltip btn btn-sm btn-raised btn-primary hidden-xs",
+          title: "", data: { toggle: "tooltip", placement: "bottom", original_title: "Sort alphabetically" } %>
+        <% else %>
+          <%= link_to 'A-Z', cur_path.call(cur_query.merge(sort: 'a_z')), class: "js-tooltip btn btn-sm",
+          title: "", data: { toggle: "tooltip", placement: "bottom", original_title: "Sort alphabetically" } %>
+        <% end %>
+
+        <%= link_to 'Hot', cur_path.call(cur_query.merge(sort: 'hot')),
+          class: "js-tooltip btn btn-sm #{ ( cur_sort == 'hot' ) ? ' btn-raised btn-primary hidden-xs' : '' }",
+          title: "", data: { toggle: "tooltip", placement: "bottom", original_title: "Sort by activity" } %>
+
+      </div>
+
+    </div>
+
+    <div class="panel-body">
+
+      <div class="list-group cs-no-margin row">
+
+        <%= render partial: 'layouts/package_list', locals: { packages: @packages } %>
+
+      </div>
+
+    </div>
+
+      <% if @disable_paginate %>
+
+        <div class="panel-footer cs-center cs-no-padding">
+
+          <%= link_to packages_path, class: "btn btn-default cs-side-bar-footer-link cs-full-width cs-no-margin" do %>
+            View all Packages
+          <% end %>
+
+        </div>
+
+      <% else %>
+
+        <div class="panel-footer">
+
+          <%= render partial: 'layouts/package_pagination', locals: { packages: @packages } %>
+
+        </div>
+
+      <% end %>
+
+  </div>
+
+  <div class="visible-xs">
+    <%= render 'layouts/made_with_love_panel' %>
+  </div>
+
+</div>

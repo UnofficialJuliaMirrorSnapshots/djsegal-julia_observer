@@ -1,0 +1,39 @@
+<div class="col-sm-8 cs-main-area">
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+
+      <h1>
+        <%= link_to @package.name, @package %>
+      </h1>
+
+      <h4>
+        <%= @package.description %>
+      </h4>
+
+    </div>
+
+  </div>
+
+  <%= render "layouts/readme" %>
+
+  <div class="visible-xs">
+    <%= render 'layouts/made_with_love_panel' %>
+  </div>
+
+</div>
+
+<%= render 'layouts/default_side_bar' %>
+
+<script>
+  var newsDiv = $("#js-sidebar-news__<%= @package.name.underscore.dasherize %>");
+  if ( newsDiv ) {
+    $('.cs-side-bar .panel-body').animate({
+      scrollTop: newsDiv.offset().top - 0.5 * $(document).height() - 25
+    }, 0);
+
+    var newsDivLink = newsDiv[0].getElementsByTagName('a')[0];
+    newsDivLink.classList.add('active');
+  }
+</script>

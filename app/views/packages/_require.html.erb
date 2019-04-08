@@ -1,0 +1,209 @@
+<%
+
+  max_packages = 30
+
+  dependency_relations = {}
+
+  dependency_relations["Requires"] = @package.active_dependencies.order(is_shallow: :desc).joins(:depended).where.not(packages: {name: ["Julia", @package.name]})
+
+  dependency_relations["Used By"] = @package.passive_dependencies.order(is_shallow: :desc).joins(:dependent).where.not(packages: {name: ["Julia", @package.name, "Cuddle"]})
+
+  unless cookies[:include_unregistered_packages] == 'true'
+    dependency_relations.each do |k, v|
+      dependency_relations[k] = dependency_relations[k]
+        .where(packages: {is_registered: true})
+    end
+  end
+
+  dependency_relations["Requires"] = dependency_relations["Requires"].includes(depended: :counter).order("counters.stargazer desc")
+
+  dependency_relations["Used By"] = dependency_relations["Used By"].includes(dependent: :counter).order("counters.stargazer desc")
+
+  cs_require_class = "row cs-require-panels cs-no-margin"
+
+  if dependency_relations.values.flatten.empty?
+    cs_require_class += " hidden"
+  end
+
+%>
+
+<div class="<%= cs_require_class %>">
+
+  <% dependency_relations.each do |cur_name, assocs| %>
+
+    <%
+
+      is_full_list = assocs.count > max_packages
+
+      assoc_list = assocs.first max_packages
+
+      if cur_name == "Requires"
+        assoc_tuples = assoc_list.map{ |a| [a.depended, a.is_shallow] }
+      else
+        assoc_tuples = assoc_list.map{ |a| [a.dependent, a.is_shallow] }
+      end
+
+    %>
+
+    <div class="col-sm-6">
+
+      <div class="panel panel-default cs-no-margin <%= "cs-hide-indirect-dependencies" unless is_full_list %>">
+
+        <div class="panel-heading">
+
+          <h4 class="cs-no-margin">
+            <%= cur_name %>:
+          </h4>
+
+          <%
+
+            include_checkbox = ( not assoc_tuples.empty? )
+
+            if include_checkbox
+              shallow_count = assocs.where(is_shallow: true).count
+              total_count = assocs.count
+
+              include_checkbox &= ( shallow_count != total_count )
+            end
+
+            include_checkbox |= is_full_list
+
+          %>
+
+          <% if include_checkbox %>
+
+            <%
+              tooltip_text = "#{ shallow_count } | "
+              tooltip_text += "<strong>#{ total_count }</strong>"
+            %>
+
+            <div class="checkbox <%= "disabled" if is_full_list %> cs-pull-right cs-include-checkbox cs-secondary-checkbox" data-toggle="tooltip" data-html="true" data-placement="auto left" title="" data-original-title="<%= tooltip_text %>">
+              <label>
+                <% if is_full_list %>
+                  <input type="checkbox" disabled="">
+                <% else %>
+                  <input type="checkbox">
+                <% end %>
+              </label>
+            </div>
+
+          <% end %>
+
+        </div>
+
+        <div class="panel-body cs-no-padding">
+
+          <div class="list-group">
+
+            <% if assoc_tuples.empty? %>
+
+              <div class="list-group-item cs-no-padding">
+
+                <div class="row-content cs-full-width cs-category-row">
+
+                  <a class="btn btn-default cs-full-width cs-left-align cs-no-margin">
+                    No Packages
+                  </a>
+                </div>
+
+              </div>
+
+            <% end %>
+
+            <% assoc_tuples.each_with_index do |(package, is_shallow), index| %>
+
+              <div class="<%= "cs-is-indirect-dependency" unless is_shallow %>">
+
+                <% unless index.zero? %>
+
+                  <div class="list-group-separator cs-full-width cs-no-margin"></div>
+
+                <% end %>
+
+                <div class="list-group-item cs-no-padding">
+
+                  <div class="row-content cs-full-width cs-category-row">
+
+                    <%=
+                      link_to package.name,
+                        package_path(package),
+                        class: "btn btn-default cs-full-width cs-left-align cs-no-margin #{ 'active' if current_page?(package_path(package)) }"
+                    %>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            <% end %>
+
+            <% if is_full_list %>
+
+              <%
+                if cur_name == "Requires"
+                  cur_label = "Depending"
+                  cur_path = packages_path(depended_id: @package)
+                else
+                  cur_label = "Dependent"
+                  cur_path = packages_path(dependent_id: @package)
+                end
+              %>
+
+              <div class="list-group-separator cs-full-width cs-no-margin"></div>
+
+              <div class="list-group-item cs-no-padding">
+
+                <div class="row-content cs-full-width cs-category-row">
+
+                  <%= link_to cur_path, class: "btn btn-default active cs-full-width cs-no-margin" do %>
+                    View All <%= cur_label %> Pkgs
+                  <% end %>
+
+                </div>
+
+              </div>
+
+            <% end %>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  <% end %>
+
+</div>
+
+<script>
+
+  $(document).ready(function() {
+    $(".cs-secondary-checkbox[data-toggle='tooltip']").tooltip();
+  });
+
+  $(".cs-require-panels .checkbox:not(.disabled)").click(function() {
+
+    var includeIndirectDependencies = this.getElementsByTagName("input")[0].checked;
+
+    if ( includeIndirectDependencies == true ) {
+      this.parentElement.parentElement.classList.remove("cs-hide-indirect-dependencies");
+    } else {
+      this.parentElement.parentElement.classList.add("cs-hide-indirect-dependencies");
+    }
+
+  });
+
+  $(".cs-require-panels .list-group").on('mousewheel DOMMouseScroll', function (e) {
+    var e0 = e.originalEvent;
+    var delta = e0.wheelDelta || -e0.detail;
+
+    if ( delta < 0 ) { return; }
+
+    this.scrollTop -= 30;
+    e.preventDefault();
+  });
+
+</script>

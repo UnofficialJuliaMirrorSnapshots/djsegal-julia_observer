@@ -1,0 +1,234 @@
+<%
+
+  cookies.permanent[:news_type] ||= 'stack_overflow'
+
+  has_discourse_news = ( cookies.permanent[:news_type] == 'discourse' )
+  has_reddit_news = ( cookies.permanent[:news_type] == 'reddit' )
+  has_github_news = ( cookies.permanent[:news_type] == 'github' )
+  has_stack_overflow_news = ( cookies.permanent[:news_type] == 'stack_overflow' )
+
+  # has_all_news = ( cookies.permanent[:news_type] == 'all' )
+
+%>
+
+<div class="list-group-item cs-center row cs-no-padding cs-no-margin">
+
+  <%= link_to settings_path(news_type: has_discourse_news ? 'all' : 'discourse'), class: "col-xs-3 cs-no-margin btn cs-news-selector #{ 'btn-primary' if has_discourse_news }" do %>
+    <h4 class="cs-no-margin">
+      <%= fa_icon "comment" %>
+    </h4>
+  <% end %>
+
+  <%= link_to settings_path(news_type: has_stack_overflow_news ? 'all' : 'stack_overflow'), class: "col-xs-3 cs-no-margin btn cs-news-selector #{ 'btn-primary' if has_stack_overflow_news }" do %>
+    <h4 class="cs-no-margin">
+      <%= fa_icon "stack-overflow" %>
+    </h4>
+  <% end %>
+
+  <%= link_to settings_path(news_type: has_reddit_news ? 'all' : 'reddit'), class: "col-xs-3 cs-no-margin btn cs-news-selector #{ 'btn-primary' if has_reddit_news }" do %>
+    <h4 class="cs-no-margin">
+      <%= fa_icon "reddit" %>
+    </h4>
+  <% end %>
+
+  <%= link_to settings_path(news_type: has_github_news ? 'all' : 'github'), class: "col-xs-3 cs-no-margin btn cs-news-selector #{ 'btn-primary' if has_github_news }" do %>
+    <h4 class="cs-no-margin">
+      <%= fa_icon "github" %>
+    </h4>
+  <% end %>
+
+</div>
+
+<%
+  has_no_news_type = !has_discourse_news && !has_reddit_news
+  has_no_news_type &= !has_github_news && !has_stack_overflow_news
+
+  if has_no_news_type
+    has_discourse_news, has_reddit_news = true, true
+    has_github_news, has_stack_overflow_news = true, true
+  end
+
+  if has_discourse_news
+    discourse_even_news_items, discourse_odd_news_items = \
+      DiscourseNewsItem.active_batch_scope.includes(:target)
+      .limit(50).all.partition.with_index { |x, i| i.even? }
+  end
+
+  news_items_lists = []
+
+  if has_reddit_news
+    news_items_lists << RedditNewsItem.active_batch_scope.includes(:target).all
+  end
+
+  if has_discourse_news
+    news_items_lists << discourse_even_news_items
+  end
+
+  if has_github_news
+    news_items_lists << GithubNewsItem.active_batch_scope.includes(:target).all
+  end
+
+  if has_discourse_news
+    news_items_lists << discourse_odd_news_items
+  end
+
+  if has_stack_overflow_news
+    news_items_lists << StackOverflowNewsItem.active_batch_scope.includes(:target).all
+  end
+
+  news_items_lists.select! &:present?
+  news_items_lists.reject! &:empty?
+
+  if news_items_lists.empty?
+    news_items = []
+  else
+    first_news_items = news_items_lists.shift
+
+    news_items = first_news_items.zip(
+      *news_items_lists
+    ).flatten
+  end
+
+  news_css_classes = 'btn btn-default cs-left-align cs-no-margin col-xs-10'
+
+%>
+
+<%
+
+  blurb_replace_tags = %w[
+    p
+    a
+    pre
+    code
+    strong
+    blockquote
+  ]
+
+%>
+
+<% news_items.first(60).each_with_index do |news_item, index| %>
+
+  <% next unless news_item.present? %>
+
+  <div class="list-group-separator cs-full-width cs-no-margin"></div>
+
+  <div class="list-group-item cs-no-padding" id="js-sidebar-news__<%= news_item.name.underscore.dasherize %>">
+
+    <div class="cs-full-width cs-category-row row cs-no-margin">
+
+        <% case news_item.target_type %>
+        <% when 'Reference' %>
+
+          <a href="<%= news_item.target.link %>" class="<%= news_css_classes %> cs-link-hover" target="_blank">
+
+            <p class="cs-truncated-text">
+              <%= CGI.unescapeHTML( news_item.name ).html_safe %>
+            </p>
+
+            <p class="cs-truncated-text cs-no-margin">
+              <i>link: <span class='cs-link'><%= news_item.target.link %></span></i>
+            </p>
+
+          </a>
+
+        <% when 'Blurb' %>
+
+          <div class="<%= news_css_classes %> cs-show-more-toggle js-show-more-toggle">
+
+            <p class="cs-truncated-text">
+              <%= CGI.unescapeHTML( news_item.name ).html_safe %>
+            </p>
+
+            <%
+
+              blurb_cargo = news_item.target.cargo
+
+              needs_cleaning = news_item.type == "StackOverflowNewsItem"
+              needs_cleaning &&= blurb_cargo.include? '<code>'
+
+              if needs_cleaning
+                split_cargo = blurb_cargo.split '<code>'
+
+                split_cargo.each_with_index do |cargo_piece, index|
+                  next if index.even?
+
+                  blurb_replace_tags.each do |cur_tag|
+                    cargo_piece.gsub! "<#{cur_tag}", "julia-observer-news-cut-paste_#{cur_tag}_open"
+                    cargo_piece.gsub! "</#{cur_tag}", "julia-observer-news-cut-paste_#{cur_tag}_close"
+                  end
+
+                  cargo_piece.gsub! "&lt;", "julia-observer-news-cut-paste_less_than"
+                  cargo_piece.gsub! "<", "julia-observer-news-cut-paste_less_than"
+
+                  blurb_replace_tags.each do |cur_tag|
+                    cargo_piece.gsub! "julia-observer-news-cut-paste_#{cur_tag}_open", "<#{cur_tag}"
+                    cargo_piece.gsub! "julia-observer-news-cut-paste_#{cur_tag}_close", "</#{cur_tag}"
+                  end
+
+                  split_cargo[index] = cargo_piece
+                end
+
+                blurb_cargo = split_cargo.join '<code>'
+              end
+
+              blurb_cargo = CGI.unescapeHTML( blurb_cargo )
+
+              if needs_cleaning
+                blurb_cargo.gsub! "julia-observer-news-cut-paste_less_than", "&lt;"
+              end
+
+            %>
+
+            <div class="cs-blurb-text">
+              <%= blurb_cargo.html_safe %>
+            </div>
+
+          </div>
+
+        <% when 'Package' %>
+
+          <%= link_to news_item_path(news_item), class: "#{news_css_classes} cs-link-hover" do %>
+
+            <p class="cs-truncated-text">
+              New Package: <%= news_item.name %>
+            </p>
+
+            <p class="cs-no-margin">
+              <span class='cs-link'>view summary</span>
+            </p>
+
+          <% end %>
+
+        <% else %>
+
+          <div class="<%= news_css_classes %>">
+
+            <p>
+              shoot...
+            </p>
+
+            <p class="cs-no-margin">
+              :(
+            </p>
+
+          </div>
+
+        <% end %>
+
+      <a class="btn btn-default cs-no-margin col-xs-2 cs-link-icon" href="<%= news_item.link %>" style='padding-left: 0; padding-right: 0;' target="_blank">
+
+        <% icon_type = news_item.class.name[/.*(?=NewsItem)/].underscore %>
+
+        <% icon_type = 'comment' if icon_type == 'discourse' %>
+
+        <% icon_type.gsub! '_', '-' %>
+
+        <%= fa_icon "#{ icon_type } 2x" %>
+
+      </a>
+
+    </div>
+
+  </div>
+
+<% end %>

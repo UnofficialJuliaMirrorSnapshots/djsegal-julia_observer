@@ -1,0 +1,36 @@
+<%
+  page = ( params[:page] || '1' ).to_i
+
+  has_per_page = defined? per_page
+
+  per_page = WillPaginate.per_page \
+    unless has_per_page
+%>
+
+<%
+  unless page == 1
+    ahoy.track "Paginated: #{controller_name}"
+  end
+%>
+
+<% if packages.count > per_page * page %>
+  <%=
+      will_paginate packages,
+      class: 'pagination cs-full-width cs-no-margin cs-center',
+      params: { :controller => controller_name, :action => action_name }
+  %>
+<% else %>
+  <div class='pagination cs-full-width cs-no-margin cs-center js-blank-pagination'>
+    <%
+        is_restricted = params[:term].present?
+        is_restricted ||= \
+          ( page == 1 && controller_name != 'packages' )
+    %>
+
+    <% if is_restricted %>
+      <%= link_to 'View all Packages', packages_path %>
+    <% else %>
+      <a href='#top'>Scroll to Top</a>
+    <% end %>
+  </div>
+<% end %>

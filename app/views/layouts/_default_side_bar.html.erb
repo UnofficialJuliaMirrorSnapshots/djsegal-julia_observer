@@ -1,0 +1,45 @@
+<div class="cs-side-bar cs-default-sidebar col-sm-4 hidden-xs cs-no-padding">
+
+  <div class="panel panel-primary cs-no-margin">
+
+    <% cookies.permanent[:sidebar_select] ||= 'categories' %>
+
+    <div class="panel-heading cs-center row cs-no-padding cs-no-margin">
+      <%= link_to settings_path(sidebar_select: 'categories'), class: "col-xs-6 cs-no-margin cs-no-padding cs-sidebar-toggle btn cs-no-round #{ 'btn-default cs-inactive-toggle' unless cookies[:sidebar_select] == 'categories' }" do %>
+        <h4 class="cs-no-margin">
+          Categories
+        </h4>
+      <% end %>
+
+      <%= link_to settings_path(sidebar_select: 'news'), class: "col-xs-6 cs-no-margin cs-no-padding cs-sidebar-toggle btn cs-no-round #{ 'btn-default cs-inactive-toggle' unless cookies[:sidebar_select] == 'news' }" do %>
+        <h4 class="cs-no-margin">
+          News
+        </h4>
+      <% end %>
+    </div>
+
+    <div class="panel-body cs-no-padding">
+
+      <div class="list-group js-sidebar-body">
+
+        <% case cookies[:sidebar_select] %>
+        <% when 'categories' %>
+          <%= render 'layouts/categories_side_bar' %>
+        <% when 'news' %>
+          <%= render 'layouts/news_side_bar' %>
+        <% else %>
+          shucks :/
+        <% end %>
+
+    </div>
+
+    <div class="panel-footer cs-center cs-no-padding">
+      <a href="https://github.com/djsegal/julia_observer" target="_blank" class="btn btn-default cs-side-bar-footer-link cs-full-width cs-no-margin">
+        <%= fa_icon "github lg" %>
+        &nbsp; fork us on github
+      </a>
+    </div>
+
+  </div>
+
+</div>

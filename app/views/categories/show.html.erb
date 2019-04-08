@@ -1,0 +1,19 @@
+<%
+  page_title @category.name
+  page_description "Julia packages underneath the #{@category.name} category"
+%>
+
+<%= render 'layouts/package_main_area' %>
+
+<%= render 'layouts/default_side_bar' %>
+
+<%= render 'layouts/pagination_js' %>
+
+<script>
+  var categoriesDiv = $("#js-sidebar-categories__<%= @category.name.gsub(' ', '-').underscore.dasherize %>");
+  if ( categoriesDiv ) {
+    $('.cs-side-bar .panel-body').animate({
+      scrollTop: categoriesDiv.offset().top - 0.5 * $(document).height() - 25
+    }, 0);
+  }
+</script>
