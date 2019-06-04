@@ -306,7 +306,12 @@ namespace :github do
         next
       end
 
-      user_class = information['type'].constantize
+      begin
+        user_class = information['type'].constantize
+      rescue
+        puts ["bad type",user_file,information['type']]
+        next
+      end
 
       user = user_class.new \
         name: user_name, \
