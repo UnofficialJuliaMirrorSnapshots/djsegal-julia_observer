@@ -145,7 +145,29 @@ namespace :github do
         require_file['content'] = \
           Base64.decode64 require_response['content']
       else
-        nasty_packages << directory
+        project_toml = hit_url "#{information['url']}/contents/Project.toml", is_new_response
+
+        if project_toml['encoding'] == 'base64'
+          raw_content = Base64.decode64 project_toml['content']
+
+          begin
+            require_content = raw_content.match(
+              /(?<=\[deps\])[^\[]*/
+            ).to_s.strip.split("\n").map{
+              |dep_str| dep_str.split("=").first.strip
+            }.join("\n")
+
+            require_file['content'] = require_content
+          rescue
+            CronLogMailer.log_email(
+              "Project Toml", raw_content.to_yaml
+            ).deliver_now
+
+            nasty_packages << directory
+          end
+        else
+          nasty_packages << directory
+        end
       end
 
       FileUtils.mkdir_p(package_directory) \

@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails-assets-bootstrap-material-design', '0.5.2', source: 'https://rails-assets.org'
+gem 'rails-assets-bootstrap-material-design', '0.5.10', source: 'https://rails-assets.org'
 
 gem 'annotate'
 
@@ -86,8 +86,8 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'pry-byebug'
   gem 'letter_opener'
-  gem 'binding_of_caller'
-  gem 'better_errors'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 group :production do
